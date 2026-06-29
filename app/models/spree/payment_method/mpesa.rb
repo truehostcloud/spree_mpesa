@@ -23,7 +23,7 @@ module Spree
     end
 
     def source_required?
-      true
+      false
     end
 
     def payment_profiles_supported?
@@ -163,7 +163,10 @@ module Spree
       mpesa_source = source.presence || payment.source
       return mpesa_source if mpesa_source.is_a?(Spree::MpesaSource) && mpesa_source.phone.present?
 
-      phone = payment.source&.phone || payment.order&.bill_address&.phone
+      phone = payment.source&.phone ||
+              payment.metadata&.dig('phone') ||
+              payment.order&.bill_address&.phone ||
+              payment.order&.ship_address&.phone
       return if phone.blank?
 
       Spree::MpesaSource.find_or_initialize_by(payment_method: self, phone: phone).tap do |record|
