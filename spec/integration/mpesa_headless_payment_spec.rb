@@ -22,33 +22,46 @@ RSpec.describe 'M-Pesa headless (sourceless) payment', type: :model do
     expect(payment_method.source_required?).to be(false)
 
     payment = order.payments.build(
-      payment_method: payment_method, amount: 10, metadata: { 'phone' => '254708374149' }
+      payment_method: payment_method, amount: 100, metadata: { 'phone' => '254708374149' }
     )
 
     expect(payment.save).to be(true)
     expect(payment.source).to be_nil
   end
 
-  it 'builds the source from the metadata phone and fires the STK push' do
-    payment = order.payments.create!(
-      payment_method: payment_method, amount: 10, metadata: { 'phone' => '0708374149' }
-    )
+  context 'when processed through the real Spree payment pipeline' do
+    it 'resolves the payment from gateway_options, builds the source from metadata and fires the STK' do
+      payment = order.payments.create!(
+        payment_method: payment_method, amount: 100, metadata: { 'phone' => '0708374149' }
+      )
 
-    response = payment_method.authorize(10, payment.source, originator: payment)
+      payment.authorize!
 
-    expect(response).to be_success
-    expect(payment.reload.source).to be_a(Spree::MpesaSource)
-    expect(payment.source.phone).to eq('254708374149')
-    expect(payment.source.checkout_request_id).to eq('ws_CO_headless')
-  end
+      expect(payment.reload).to be_pending
+      expect(payment.amount).to eq(100)
+      expect(payment.source).to be_a(Spree::MpesaSource)
+      expect(payment.source.phone).to eq('254708374149')
+      expect(payment.source.checkout_request_id).to eq('ws_CO_headless')
+    end
 
-  it 'falls back to the order bill address phone when no metadata phone is present' do
-    order.update!(bill_address: create(:address, phone: '254712345678'))
-    payment = order.payments.create!(payment_method: payment_method, amount: 10)
+    it 'falls back to the order bill address phone when no metadata phone is present' do
+      order.update!(bill_address: create(:address, phone: '254712345678'))
+      payment = order.payments.create!(payment_method: payment_method, amount: 100)
 
-    response = payment_method.authorize(10, payment.source, originator: payment)
+      payment.authorize!
 
-    expect(response).to be_success
-    expect(payment.reload.source.phone).to eq('254712345678')
+      expect(payment.reload).to be_pending
+      expect(payment.source.phone).to eq('254712345678')
+    end
+
+    it 'does not overwrite the payment amount with the cents value Spree passes to authorize' do
+      payment = order.payments.create!(
+        payment_method: payment_method, amount: 100, metadata: { 'phone' => '254708374149' }
+      )
+
+      payment.authorize!
+
+      expect(payment.reload.amount).to eq(100)
+    end
   end
 end

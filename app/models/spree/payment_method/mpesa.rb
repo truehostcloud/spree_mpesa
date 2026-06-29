@@ -55,7 +55,7 @@ module Spree
     end
 
     def authorize(amount, source, options = {})
-      payment = options[:originator]
+      payment = resolve_payment(source, options)
       return failure_response('Payment is missing') unless payment.is_a?(Spree::Payment)
 
       mpesa_source = ensure_source(source, payment)
@@ -63,14 +63,13 @@ module Spree
 
       payment.source = mpesa_source
       payment.payment_method ||= self
-      payment.amount = amount if amount.present?
       return failure_response(payment.errors.full_messages.to_sentence) unless payment.save
 
-      initiate_stk_push(payment: payment, source: mpesa_source, amount: amount)
+      initiate_stk_push(payment: payment, source: mpesa_source, amount: payment.amount)
     rescue StandardError => e
       failure_response("Authorization failed: #{e.message}")
     end
-
+  
     def purchase(amount, source, options = {})
       authorize(amount, source, options)
     end
@@ -108,6 +107,12 @@ module Spree
     end
 
     private
+
+    def resolve_payment(_source, options)
+      return options[:originator] if options[:originator].is_a?(Spree::Payment)
+
+      Spree::Payment.find_by(number: options[:payment_id])
+    end
 
     def initiate_stk_push(payment:, source:, amount:)
       return failure_response('M-Pesa configuration is incomplete') unless configured?
