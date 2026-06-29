@@ -1,28 +1,68 @@
-<div class="card mb-6">
-  <div class="card-header">
-    <h5 class="card-title">How to receive M-Pesa payments</h5>
+<div class="card mb-5">
+  <div class="card-header py-3">
+    <h5 class="card-title mb-0">Set up M-Pesa payments</h5>
   </div>
-  <div class="card-body">
-    <p>
-      To get paid by M-Pesa, paste four things from your own Paybill into the boxes below:
-      your <strong>Paybill Number (Shortcode)</strong>, <strong>Consumer Key</strong>,
-      <strong>Consumer Secret</strong>, and <strong>Passkey</strong>.
-      Only you, as the paybill owner, can get the last three from Safaricom. Here is how:
+
+  <div class="card-body p-4">
+    <p class="mb-4">
+      This is a one-time setup. Once complete, customer payments are deposited
+      to your M-Pesa account automatically. The steps could be a bit technical,
+      but totally doable. 
     </p>
-    <ol class="mb-3">
-      <li>Have a Safaricom <strong>Paybill</strong>. No paybill yet? Get one from Safaricom first.</li>
-      <li>Go to
-        <a href="https://developer.safaricom.co.ke" target="_blank" rel="noopener">developer.safaricom.co.ke</a>
-        and sign up. Use the phone number that owns your paybill.</li>
-      <li>Click <strong>"Go Live"</strong> at the top, type in your Paybill number, and confirm with the code Safaricom texts you.</li>
-      <li>Safaricom <strong>emails you your Passkey</strong>. Your <strong>Consumer Key</strong> and
-        <strong>Consumer Secret</strong> are on the site under <strong>"My Apps"</strong>.</li>
-      <li>Copy those four things into the boxes below. Done, you can now take M-Pesa payments.</li>
+
+    <h6 class="fw-bold mb-2">What you will need</h6>
+    <p class="mb-2">Four values from your Safaricom account, entered in the fields below:</p>
+    <ol class="mb-2 ps-3">
+      <li class="mb-1">Business Shortcode (your Paybill or Till number)</li>
+      <li class="mb-1">Consumer Key</li>
+      <li class="mb-1">Consumer Secret</li>
+      <li class="mb-1">Passkey</li>
     </ol>
-    <small class="form-text text-muted">
-      Safaricom may take a day or two to approve. Too busy or stuck? Email
-      <a href="mailto:M-PESABusiness@safaricom.co.ke">M-PESABusiness@safaricom.co.ke</a>
-      or call <strong>0722 002 222</strong> and an agent will set it up and send you your passkey.
-    </small>
+    <p class="text-muted mb-4">For security, only the account owner can obtain these from Safaricom.</p>
+
+    <h6 class="fw-bold mb-3">Steps</h6>
+    <ol class="mb-4 ps-3">
+      <li class="mb-3">
+        <strong>Confirm your M-Pesa business shortcode.</strong>
+        If you do not have a Paybill or Till, register one on the M-Pesa
+        self-onboarding portal or at a Safaricom shop. 
+      </li>
+      <li class="mb-3">
+        <strong>Create a developer account.</strong>
+        Sign up at
+        <a href="https://developer.safaricom.co.ke" target="_blank" rel="noopener">developer.safaricom.co.ke</a>
+        using the phone number registered to your shortcode.
+      </li>
+      <li class="mb-3">
+        <strong>Complete Go Live.</strong>
+        Select Go Live, enter your shortcode, and verify with the code sent to
+        your phone.
+      </li>
+      <li class="mb-3">
+        <strong>Retrieve your credentials.</strong>
+        Safaricom emails your Passkey. Your Consumer Key and Consumer Secret are
+        listed under My Apps.
+      </li>
+      <li class="mb-0">
+        <strong>Enter the four values below and save.</strong>
+      </li>
+    </ol>
+
+    <div class="alert alert-light border mb-0" role="alert">
+      <h6 class="fw-bold mb-2">Need help?</h6>
+      <p class="mb-2">
+        Safaricom M-Pesa Business support can guide you through Go Live and
+        credential retrieval:
+      </p>
+      <ul class="mb-2">
+        <li class="mb-1">Call 2222 from a Safaricom line, or 0722 002 222 from any phone.</li>
+        <li class="mb-1">Email <a href="mailto:M-PESAbusiness@safaricom.co.ke">M-PESAbusiness@safaricom.co.ke</a>.</li>
+      </ul>
+      <p class="mb-0 text-muted">
+        A developer or IT administrator can also complete these steps on your
+        behalf using your shortcode. Funds are always deposited to your own
+        M-Pesa account.
+      </p>
+    </div>
   </div>
 </div>
