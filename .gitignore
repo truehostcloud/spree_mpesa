@@ -1,0 +1,21 @@
+/.bundle/
+/Gemfile.lock
+/tmp/
+/log/
+/coverage/
+*.gem
+.DS_Store
+
+# Dummy test app: commit the app + db/schema.rb (CI loads the schema),
+# but never commit its generated or runtime artifacts.
+/spec/dummy/db/*.sqlite3
+/spec/dummy/db/*.sqlite3-*
+/spec/dummy/db/migrate/
+/spec/dummy/log/
+/spec/dummy/tmp/
+/spec/dummy/storage/
+/spec/dummy/public/assets/
+
+# Never commit the dummy app's master key or encrypted credentials.
+/spec/dummy/config/master.key
+/spec/dummy/config/credentials.yml.enc
