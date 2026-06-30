@@ -61,13 +61,30 @@ RSpec.describe Spree::PaymentMethod::Mpesa do
       expect(response).not_to be_success
     end
 
-    it 'fails fast when the phone is missing' do
+    it 'fails fast when no phone is available on the source, metadata, or order addresses' do
       payment
       source.update_column(:phone, '')
+      order.update_columns(bill_address_id: nil, ship_address_id: nil)
 
       response = payment_method.authorize(10, source, originator: payment)
 
       expect(response).not_to be_success
+    end
+
+    it 'falls back to the order address phone when the passed source phone is blank' do
+      stub_request(:post, %r{/mpesa/stkpush/v1/processrequest}).to_return(
+        status: 200,
+        body: { ResponseCode: '0', MerchantRequestID: 'm1', CheckoutRequestID: 'ws_CO_fallback',
+                CustomerMessage: 'Success' }.to_json
+      )
+      payment
+      source.update_column(:phone, '')
+      order.update!(bill_address: create(:address, phone: '254712345678'))
+
+      response = payment_method.authorize(10, source, originator: payment)
+
+      expect(response).to be_success
+      expect(payment.reload.source.phone).to eq('254712345678')
     end
   end
 end

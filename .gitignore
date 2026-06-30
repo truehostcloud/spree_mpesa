@@ -15,3 +15,7 @@
 /spec/dummy/tmp/
 /spec/dummy/storage/
 /spec/dummy/public/assets/
+
+# Never commit the dummy app's master key or encrypted credentials.
+/spec/dummy/config/master.key
+/spec/dummy/config/credentials.yml.enc
