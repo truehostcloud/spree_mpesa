@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Spree
-  class MpesaCallbacksController < ::ApplicationController
+  class MpesaCallbacksController < ActionController::Base
     STILL_PROCESSING_RESULT_CODE = '4999'
 
     layout false
