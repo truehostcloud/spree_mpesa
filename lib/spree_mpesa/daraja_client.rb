@@ -7,6 +7,16 @@ module SpreeMpesa
     SANDBOX_BASE = 'https://sandbox.safaricom.co.ke'
     PRODUCTION_BASE = 'https://api.safaricom.co.ke'
 
+    TRANSPORT_ERRORS = [
+      HTTParty::Error,
+      Net::OpenTimeout,
+      Net::ReadTimeout,
+      SocketError,
+      OpenSSL::SSL::SSLError,
+      Errno::ECONNREFUSED,
+      JSON::ParserError
+    ].freeze
+
     def initialize(consumer_key:, consumer_secret:, shortcode:, passkey:,
                    transaction_type: 'CustomerPayBillOnline', test_mode: true)
       @consumer_key = consumer_key
@@ -41,8 +51,8 @@ module SpreeMpesa
       )
 
       parse_stk_response(response)
-    rescue StandardError => e
-      { success: false, message: e.message }
+    rescue *TRANSPORT_ERRORS
+      { success: false, message: 'M-Pesa request failed' }
     end
 
     def query_stk_status(checkout_request_id:)
@@ -62,8 +72,8 @@ module SpreeMpesa
       )
 
       parse_query_response(response)
-    rescue StandardError => e
-      { success: false, message: e.message }
+    rescue *TRANSPORT_ERRORS
+      { success: false, message: 'M-Pesa request failed' }
     end
 
     private
@@ -103,7 +113,7 @@ module SpreeMpesa
         headers: { 'Authorization' => "Basic #{credentials}" }
       )
       JSON.parse(response.body)['access_token']
-    rescue StandardError
+    rescue *TRANSPORT_ERRORS
       nil
     end
 

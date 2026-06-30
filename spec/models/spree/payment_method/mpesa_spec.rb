@@ -86,5 +86,27 @@ RSpec.describe Spree::PaymentMethod::Mpesa do
       expect(response).to be_success
       expect(payment.reload.source.phone).to eq('254712345678')
     end
+
+    it 'fails fast without calling Daraja when the callback URL cannot be resolved' do
+      payment
+      allow(payment_method).to receive(:callback_url).and_return('')
+
+      response = payment_method.authorize(10, source, originator: payment)
+
+      expect(response).not_to be_success
+      expect(response.message).to match(/callback url/i)
+    end
+  end
+
+  describe 'voiding' do
+    let(:payment_method) { build(:mpesa_payment_method) }
+
+    it 'never allows voiding because an STK push cannot be cancelled' do
+      expect(payment_method.can_void?(Spree::Payment.new)).to be(false)
+    end
+
+    it 'returns a failure response when a void is attempted' do
+      expect(payment_method.void('ws_CO_1').success?).to be(false)
+    end
   end
 end

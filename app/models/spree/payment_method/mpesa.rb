@@ -46,8 +46,8 @@ module Spree
       payment.pending? || payment.checkout?
     end
 
-    def can_void?(payment)
-      payment.pending? || payment.processing?
+    def can_void?(_payment)
+      false
     end
 
     def test_mode?
@@ -66,8 +66,8 @@ module Spree
       return failure_response(payment.errors.full_messages.to_sentence) unless payment.save
 
       initiate_stk_push(payment: payment, source: mpesa_source, amount: payment.amount)
-    rescue StandardError => e
-      failure_response("Authorization failed: #{e.message}")
+    rescue ActiveRecord::ActiveRecordError
+      failure_response('Authorization could not be completed')
     end
   
     def purchase(amount, source, options = {})
@@ -79,12 +79,10 @@ module Spree
       return success_response('Payment captured', authorization: response_code) if source&.completed?
 
       failure_response('Awaiting M-Pesa confirmation')
-    rescue StandardError => e
-      failure_response("Capture failed: #{e.message}")
     end
 
     def void(_response_code, _options = {})
-      success_response('Voided')
+      failure_response('M-Pesa payments cannot be voided; reverse the transaction in M-Pesa and reconcile manually')
     end
 
     def daraja_client
@@ -117,12 +115,15 @@ module Spree
     def initiate_stk_push(payment:, source:, amount:)
       return failure_response('M-Pesa configuration is incomplete') unless configured?
 
+      callback = callback_url(payment.order)
+      return failure_response('Callback URL is not configured') if callback.blank?
+
       result = daraja_client.stk_push(
         phone: source.phone,
         amount: amount.to_f,
         account_reference: payment.order.number,
         transaction_desc: "Order #{payment.order.number}",
-        callback_url: callback_url(payment.order)
+        callback_url: callback
       )
 
       return failure_response(result[:message] || 'Failed to initiate M-Pesa payment') unless result[:success]

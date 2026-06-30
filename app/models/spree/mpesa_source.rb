@@ -15,15 +15,15 @@ module Spree
     validates :phone, presence: true
 
     def actions
-      %w[capture void]
+      %w[capture]
     end
 
     def can_capture?(payment)
       payment.pending? || payment.checkout?
     end
 
-    def can_void?(payment)
-      !payment.failed? && !payment.void?
+    def can_void?(_payment)
+      false
     end
 
     def completed?

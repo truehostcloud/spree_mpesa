@@ -34,4 +34,14 @@ RSpec.describe Spree::MpesaSource do
       expect(build(:mpesa_source, payment_method: nil, status: 'pending')).not_to be_completed
     end
   end
+
+  describe 'voiding' do
+    it 'advertises only the capture action' do
+      expect(build(:mpesa_source, payment_method: nil).actions).to eq(%w[capture])
+    end
+
+    it 'never allows voiding because an STK push cannot be cancelled' do
+      expect(build(:mpesa_source, payment_method: nil).can_void?(Spree::Payment.new)).to be(false)
+    end
+  end
 end
