@@ -98,6 +98,32 @@ RSpec.describe Spree::PaymentMethod::Mpesa do
     end
   end
 
+  describe '#configured_callback_base' do
+    let(:payment_method) { build(:mpesa_payment_method) }
+
+    it 'includes a non-standard port from default_url_options' do
+      allow(Rails.application.routes).to receive(:default_url_options).and_return(
+        host: 'localhost', port: 3000, protocol: 'https'
+      )
+
+      expect(payment_method.send(:configured_callback_base)).to eq('https://localhost:3000')
+    end
+
+    it 'omits standard port 443' do
+      allow(Rails.application.routes).to receive(:default_url_options).and_return(
+        host: 'mpesa.example.com', port: 443, protocol: 'https'
+      )
+
+      expect(payment_method.send(:configured_callback_base)).to eq('https://mpesa.example.com')
+    end
+
+    it 'returns blank when no host is configured' do
+      allow(Rails.application.routes).to receive(:default_url_options).and_return({})
+
+      expect(payment_method.send(:configured_callback_base)).to eq('')
+    end
+  end
+
   describe 'voiding' do
     let(:payment_method) { build(:mpesa_payment_method) }
 

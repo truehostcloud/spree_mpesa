@@ -162,7 +162,9 @@ module Spree
       return '' if host.blank?
 
       protocol = options[:protocol].presence || 'https'
-      "#{protocol}://#{host}"
+      port = options[:port].presence
+      host_with_port = port && ![80, 443].include?(port.to_i) ? "#{host}:#{port}" : host
+      "#{protocol}://#{host_with_port}"
     end
 
     def ensure_source(source, payment)
