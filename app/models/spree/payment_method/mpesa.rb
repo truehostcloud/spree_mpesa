@@ -128,7 +128,7 @@ module Spree
 
       return failure_response(result[:message] || 'Failed to initiate M-Pesa payment') unless result[:success]
 
-      source.update(
+      source.update!(
         merchant_request_id: result[:merchant_request_id],
         checkout_request_id: result[:checkout_request_id],
         amount: amount,

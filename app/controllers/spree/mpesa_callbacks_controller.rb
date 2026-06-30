@@ -40,7 +40,7 @@ module Spree
     end
 
     def settle_paid(source, callback)
-      source.update(
+      source.update!(
         result_code: 0,
         result_desc: callback[:ResultDesc],
         mpesa_receipt_number: receipt_number(callback),
