@@ -17,8 +17,8 @@ class CreateSpreeMpesaSources < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :spree_mpesa_sources, :checkout_request_id
-    add_index :spree_mpesa_sources, :merchant_request_id
+    add_index :spree_mpesa_sources, :checkout_request_id, unique: true
+    add_index :spree_mpesa_sources, :merchant_request_id, unique: true
     add_index :spree_mpesa_sources, :deleted_at
   end
 end
