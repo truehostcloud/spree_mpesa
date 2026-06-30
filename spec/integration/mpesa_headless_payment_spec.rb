@@ -63,5 +63,24 @@ RSpec.describe 'M-Pesa headless (sourceless) payment', type: :model do
 
       expect(payment.reload.amount).to eq(100)
     end
+
+    it 'builds a distinct source per payment so a repeat phone cannot hijack a prior payment' do
+      first_payment = order.payments.create!(
+        payment_method: payment_method, amount: 100, metadata: { 'phone' => '254708374149' }
+      )
+      first_payment.authorize!
+
+      second_order = create(:order, store: store).tap do |o|
+        o.update_columns(total: 100, item_total: 100)
+      end
+      second_payment = second_order.payments.create!(
+        payment_method: payment_method, amount: 100, metadata: { 'phone' => '254708374149' }
+      )
+      second_payment.authorize!
+
+      expect(first_payment.reload.source).to be_a(Spree::MpesaSource)
+      expect(second_payment.reload.source).to be_a(Spree::MpesaSource)
+      expect(first_payment.source.id).not_to eq(second_payment.source.id)
+    end
   end
 end

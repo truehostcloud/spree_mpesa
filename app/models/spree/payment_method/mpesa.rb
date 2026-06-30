@@ -168,15 +168,12 @@ module Spree
       mpesa_source = source.presence || payment.source
       return mpesa_source if mpesa_source.is_a?(Spree::MpesaSource) && mpesa_source.phone.present?
 
-      phone = payment.source&.phone ||
-              payment.metadata&.dig('phone') ||
+      phone = payment.metadata&.dig('phone') ||
               payment.order&.bill_address&.phone ||
               payment.order&.ship_address&.phone
       return if phone.blank?
 
-      Spree::MpesaSource.find_or_initialize_by(payment_method: self, phone: phone).tap do |record|
-        record.save! if record.new_record? || record.changed?
-      end
+      Spree::MpesaSource.create!(payment_method: self, phone: phone)
     end
   end
 end
