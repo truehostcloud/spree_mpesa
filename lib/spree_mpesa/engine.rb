@@ -13,6 +13,17 @@ module SpreeMpesa
       g.test_framework :rspec
     end
 
+    initializer 'spree_mpesa.rack_attack' do |app|
+      next unless Rails.env.production? || ENV['ENABLE_RACK_ATTACK'] == 'true'
+
+      begin
+        require 'rack/attack'
+        app.middleware.use Rack::Attack
+      rescue LoadError => e
+        Rails.logger&.warn("spree_mpesa: rack-attack unavailable, callback throttling disabled (#{e.message})")
+      end
+    end
+
     config.after_initialize do |app|
       app.config.spree.payment_methods ||= []
       unless app.config.spree.payment_methods.include?(Spree::PaymentMethod::Mpesa)
