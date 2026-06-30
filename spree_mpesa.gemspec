@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'spree_mpesa'
-  s.version     = '0.1.0'
+  s.version     = '1.0.1'
   s.summary     = 'Direct M-Pesa (Safaricom Daraja) payment method for Spree Commerce'
   s.description = 'Spree extension that adds a direct M-Pesa paybill payment method ' \
                   'using the Safaricom Daraja STK Push API, with no third-party aggregator.'

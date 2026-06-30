@@ -18,7 +18,7 @@ module SpreeMpesa
 
       begin
         require 'rack/attack'
-        app.middleware.use Rack::Attack unless app.middleware.include?(Rack::Attack)
+        app.middleware.use Rack::Attack
       rescue LoadError => e
         Rails.logger&.warn("spree_mpesa: rack-attack unavailable, callback throttling disabled (#{e.message})")
       end
