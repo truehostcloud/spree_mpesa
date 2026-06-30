@@ -18,6 +18,10 @@ module Spree
       'mpesa'
     end
 
+    def default_name
+      'Lipa na M-Pesa'
+    end
+
     def payment_source_class
       Spree::MpesaSource
     end
@@ -153,7 +157,7 @@ module Spree
       base = order&.store&.storefront_url.presence || configured_callback_base
       return '' if base.blank?
 
-      "#{base.chomp('/')}/mpesa/callback"
+      "#{base.chomp('/')}/api/v1/mpesa/callback"
     end
 
     def configured_callback_base

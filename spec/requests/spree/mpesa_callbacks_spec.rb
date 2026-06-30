@@ -31,7 +31,7 @@ RSpec.describe 'M-Pesa callback', type: :request do
         { Name: 'MpesaReceiptNumber', Value: 'TX999' }
       ] }
     } } }
-    post '/mpesa/callback', params: body.to_json, headers: { 'CONTENT_TYPE' => 'application/json' }
+    post '/api/v1/mpesa/callback', params: body.to_json, headers: { 'CONTENT_TYPE' => 'application/json' }
   end
 
   def stub_query(result_code:, response_code: '0')
@@ -83,7 +83,7 @@ RSpec.describe 'M-Pesa callback', type: :request do
     stub_query(result_code: '0')
 
     body = { Body: { stkCallback: { CheckoutRequestID: 'nope', ResultCode: 0 } } }
-    post '/mpesa/callback', params: body.to_json, headers: { 'CONTENT_TYPE' => 'application/json' }
+    post '/api/v1/mpesa/callback', params: body.to_json, headers: { 'CONTENT_TYPE' => 'application/json' }
 
     expect(response).to have_http_status(:ok)
     expect(source.reload.status).to eq('pending')
