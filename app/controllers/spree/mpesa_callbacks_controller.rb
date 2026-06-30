@@ -16,7 +16,7 @@ module Spree
       when :paid
         settle_paid(source, callback) if amount_matches?(source, callback)
       when :failed
-        source.update(
+        source.update!(
           status: Spree::MpesaSource::FAILED,
           result_desc: callback[:ResultDesc]
         )
