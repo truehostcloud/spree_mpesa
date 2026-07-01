@@ -43,7 +43,7 @@ agent will set it up and send the passkey.
 2. `authorize` requests a Daraja OAuth token, then sends an **STK Push** (shortcode +
    passkey + timestamp → password, plus the phone and amount).
 3. The customer approves with their M-Pesa PIN on their phone.
-4. Daraja calls back `POST /mpesa/callback`. `Spree::MpesaCallbacksController` then queries
+4. Daraja calls back `POST /api/v1/mpesa/callback`. `Spree::MpesaCallbacksController` then queries
    Daraja to **independently confirm** the result and completes the payment only when
    Safaricom reports it paid and the amount matches.
 
@@ -53,10 +53,11 @@ passkey) to build without moving real money.
 ## The callback URL
 
 Safaricom must reach a **public** URL, so the callback host is derived per store from the
-order's `storefront_url` (each shop's own domain). 
- For local
+order's `storefront_url` (each shop's own domain). The path is deliberately under `/api`
+(`/api/v1/mpesa/callback`) so platforms that proxy `/api` to the Rails backend and other
+paths to a separate storefront still deliver the callback to Rails. For local
 testing, expose the dev server with a tunnel (for example `ngrok`) so Safaricom can reach
-`/mpesa/callback`; `localhost` is not reachable from Safaricom.
+`/api/v1/mpesa/callback`; `localhost` is not reachable from Safaricom.
 
 ## Security
 
