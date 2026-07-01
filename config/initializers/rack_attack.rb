@@ -8,7 +8,7 @@ begin
       Rack::Attack.enabled = true
 
       Rack::Attack.throttle('mpesa_callback', limit: 60, period: 1.minute) do |req|
-        req.ip if req.post? && req.path == '/mpesa/callback'
+        req.ip if req.post? && req.path == '/api/v1/mpesa/callback'
       end
 
       Rack::Attack.throttled_responder = lambda do |env|

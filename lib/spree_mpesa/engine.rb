@@ -24,6 +24,10 @@ module SpreeMpesa
       end
     end
 
+    initializer 'spree_mpesa.assets' do |app|
+      app.config.assets.precompile += %w[payment_icons/mpesa.svg] if app.config.respond_to?(:assets)
+    end
+
     config.after_initialize do |app|
       app.config.spree.payment_methods ||= []
       unless app.config.spree.payment_methods.include?(Spree::PaymentMethod::Mpesa)

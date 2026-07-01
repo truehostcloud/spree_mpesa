@@ -124,6 +124,24 @@ RSpec.describe Spree::PaymentMethod::Mpesa do
     end
   end
 
+  describe '#callback_url' do
+    let(:payment_method) { build(:mpesa_payment_method) }
+
+    it 'builds the api-scoped callback path so the platform proxy reaches Rails' do
+      allow(Rails.application.routes).to receive(:default_url_options).and_return(
+        host: 'shop.example', protocol: 'https'
+      )
+
+      expect(payment_method.send(:callback_url, nil)).to eq('https://shop.example/api/v1/mpesa/callback')
+    end
+  end
+
+  describe '#default_name' do
+    it 'presents the method as Lipa na M-Pesa' do
+      expect(Spree::PaymentMethod::Mpesa.new.default_name).to eq('Lipa na M-Pesa')
+    end
+  end
+
   describe 'voiding' do
     let(:payment_method) { build(:mpesa_payment_method) }
 

@@ -2,5 +2,5 @@
 
 Spree::Core::Engine.routes.draw do
   # Safaricom Daraja STK Push result callback
-  post '/mpesa/callback', to: 'mpesa_callbacks#confirm', defaults: { format: 'json' }
+  post '/api/v1/mpesa/callback', to: 'mpesa_callbacks#confirm', defaults: { format: 'json' }
 end
